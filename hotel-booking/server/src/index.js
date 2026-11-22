@@ -15,9 +15,10 @@ app.get('/',(req,res)=>{
 
 app.post('/add-user', async (req, res) => {
     try {
+        const { name, email, password_hash } = req.body; 
         const result = await pool.query(
-            'INSERT INTO test_users (name, email) VALUES ($1, $2) RETURNING *',
-            ['Alok', 'alok@gmail.com']
+            'INSERT INTO users (name, email,password_hash) VALUES ($1, $2, $3) RETURNING *',
+            [name,email,password_hash]
         );
 
         res.json({
