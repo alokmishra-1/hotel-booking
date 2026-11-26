@@ -3,7 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import pool from './db.js'
 dotenv.config();
-import authRouter from './routes.js';
+import authRouter from './routes/routes.js';
 
 
 const app = express()
@@ -11,18 +11,15 @@ app.use(cors())
 
 app.use(express.json())
 
-app.use('/auth',authRouter)
+app.use('/',authRouter)
 
-app.get('/',(req,res)=>{
-    res.json({message:'hotel api running'})
-})
 
 app.post('/add-user', async (req, res) => {
     try {
-        const { name, email, password_hash } = req.body; 
+        const { name, email, password } = req.body; 
         const result = await pool.query(
             'INSERT INTO users (name, email,password_hash) VALUES ($1, $2, $3) RETURNING *',
-            [name,email,password_hash]
+            [name,email,password]
         );
 
         res.json({
