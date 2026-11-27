@@ -1,8 +1,8 @@
-import pool from "../db";
+import pool from "../db.js";
 
 const createRoom = async(req,res)=>{
     try {
-    const {hotel_id} = req.params;
+    const hotel_id = req.params.id;
     const {room_type,price_per_night,total_room,capacity} = req.body
 
     if(!room_type || !price_per_night || !total_room){
@@ -18,13 +18,15 @@ const createRoom = async(req,res)=>{
         return res.json({mssg:"Hotel not found"})
     }
 
-    const result = await pool.query("INSET INTO rooms (room_type,hotel_id,price_per_night,total_room,capacity) VALUES($1,$2,$3,$4) RETURNING *"[room_type,hotel_id,price_per_night,total_room || 1 ,capacity])
+    const result = await pool.query(
+        "INSERT INTO rooms (room_type,hotel_id,price_per_night,total_room,capacity) VALUES($1,$2,$3,$4,$5) RETURNING *",[
+        room_type,hotel_id,price_per_night,total_room || 1,capacity])
 
-    res.status(400).json(result.rows[0])
+    res.status(201).json(result.rows[0])
     } catch (err) {
-        console.error(err.message)
-        res.status(500).json({mssg:"server error"})
-    }
+    console.error(err);
+    res.status(500).json({ msg: err.message });
+}
 }
 
 const updateRoom = async (req,res) =>{
@@ -58,3 +60,5 @@ const deleteRoom = async(req,res)=>{
         res.status(500).json({mssg:"Server Error"})
     }
 }
+
+export {createRoom,updateRoom,deleteRoom}

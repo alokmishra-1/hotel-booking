@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import pool from './db.js'
 dotenv.config();
 import authRouter from './routes/routes.js';
+import hotelRoutes from './routes/hotelRoutes.js'
+import roomRoutes from './routes/roomRoutes.js'
 
 
 const app = express()
@@ -11,27 +13,10 @@ app.use(cors())
 
 app.use(express.json())
 
-app.use('/',authRouter)
+app.use('/api',authRouter)
 
-
-app.post('/add-user', async (req, res) => {
-    try {
-        const { name, email, password } = req.body; 
-        const result = await pool.query(
-            'INSERT INTO users (name, email,password_hash) VALUES ($1, $2, $3) RETURNING *',
-            [name,email,password]
-        );
-
-        res.json({
-            message: 'User saved successfully',
-            data: result.rows[0]
-        });
-
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+app.use('/room',roomRoutes)
+app.use('/hotel',hotelRoutes)
 
 
 const PORT = process.env.PORT || 5001
@@ -43,5 +28,5 @@ app.listen(PORT,async()=>{
     } catch (err) {
         console.error(err.message)        
     }
-    console.log(`Server is listening at port 5000`)
+    console.log(`Server is listening at port 5001`)
 })

@@ -16,7 +16,7 @@ const register = async(req,res) => {
         }
 
     const result = await pool.query(
-        `INSERT INTO users (name, email,password) VALUES($1,$2,$3) RETURNING id , name , email,role`,[name,email,password_hash]
+        `INSERT INTO users (name, email,password_hash) VALUES($1,$2,$3) RETURNING id , name , email,role`,[name,email,password_hash]
     )
     res.status(201).json({user:result.rows[0]})
     } catch (err) {

@@ -15,6 +15,8 @@ router.get('/admin-test',protect,adminOnly,(req,res)=>{
     res.json({mssg:"Welcome admin"})
 })
 
+
+
 router.post('/register',register);
 router.post('/login', login);
 

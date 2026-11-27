@@ -27,13 +27,14 @@ const getHotelId = async(req,res) =>{
 
 const createHotel = async(req,res) =>{
     try {
-        const {name,city,address,img_url,description} = req.body;
+        
+        const {name,city,address,image_url,description} = req.body;
         if(!name || !city){
             return res.status(400).json({mssg:"all fields are required"})
         }
-        const result = await pool.query("INSERTING INTO hotels (name,city,address,img_url,description) VALUES ($1,$2,$3,$4,$5) RETURNING *",[name,city,address,img_url,description]);
+        const result = await pool.query("INSERT INTO hotels (name,city,address,image_url,description) VALUES ($1,$2,$3,$4,$5) RETURNING *",[name,city,address,image_url,description]);
 
-        res.status(400).json(result.rows[0])
+        res.status(201).json(result.rows[0])
     } catch (err) {
         console.error(err.message)
         res.status(500).json({mssg:"server error"})

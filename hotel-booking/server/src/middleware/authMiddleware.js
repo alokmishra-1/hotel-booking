@@ -1,18 +1,20 @@
 import jwt from "jsonwebtoken"
 
 const protect = (req,res,next) =>{
-    const authHeader = req.header.authorization
-    if(!authHeader || !authHeader.search('Bearer ')){
+    const authHeader = req.headers.authorization
+    console.log("AUTH HEADER:", req.headers.authorization);
+    if(!authHeader || !authHeader.startsWith('Bearer ')){
         return res.status(400).json({mssg:"token not verified"})
     }
 
-    const token = authHeader.split('')[1]
+    const token = authHeader.slice(7).trim();
 
     try {
         const decoded = jwt.verify(token,process.env.JWT_SECRET)
         req.user = decoded
         next();
     } catch (err) {
+        console.log("JWT ERROR:", err.message);
         res.status(401).json({mssg:"token expiry or invalid"})
     }
 }
